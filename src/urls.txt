@@ -1,1 +1,2 @@
 https://github.com/kramos/Hygieia.git
+https://github.com/kramos/adop-cartridge-java.git
