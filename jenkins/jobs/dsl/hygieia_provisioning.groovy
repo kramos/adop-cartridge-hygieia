@@ -27,7 +27,7 @@ createHygieiaJob.with{
     steps {
         shell('''set +x
                 |docker-compose up -d
-                |docker exec -t -i mongodb mongo localhost/admin  --eval \'db.getSiblingDB("dashboard").createUser({user: "db", pwd: "dbpass", roles: [{role: "readWrite", db: "dashboard"}]})\'
+                |docker exec mongodb mongo localhost/admin  --eval \'db.getSiblingDB("dashboard").createUser({user: "db", pwd: "dbpass", roles: [{role: "readWrite", db: "dashboard"}]})\' || true
                 |set -x'''.stripMargin())
     }
     scm {
@@ -52,9 +52,6 @@ createHygieiaJob.with{
 // Destroy Hygieia
 destroyHygieiaJob.with{
     description("This job deletes the environment.")
-    parameters{
-        stringParam("ENVIRONMENT_NAME",'CI',"Name of the environment to be created.")
-    }
     label("docker")
     environmentVariables {
         env('WORKSPACE_NAME',workspaceFolderName)
@@ -78,6 +75,7 @@ destroyHygieiaJob.with{
     }
     steps {
         shell('''set +x
+            |docker-compose kill 
             |docker-compose rm -f
             |set -x'''.stripMargin())
     }
